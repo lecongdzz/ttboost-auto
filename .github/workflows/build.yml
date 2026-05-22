@@ -3,7 +3,7 @@ name: Build APK với Buildozer
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # Giúp bạn có thể bấm nút Tự kích hoạt build bằng tay bất cứ lúc nào
+  workflow_dispatch: # Giúp bấm nút tự kích hoạt build bằng tay bất cứ lúc nào
 
 jobs:
   build:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout mã nguồn
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4 # Đã nâng cấp lên v4
 
     - name: Cài đặt các công cụ hệ thống và Rust
       run: |
@@ -20,8 +20,8 @@ jobs:
         curl https://sh.rustup.rs -sSf | sh -s -- -y
         echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
-    - name: Thiết lập Cache cho Buildozer (Lần sau build siêu tốc chỉ 2 phút)
-      uses: actions/cache@v3
+    - name: Thiết lập Cache cho Buildozer
+      uses: actions/cache@v4 # Đã nâng cấp lên v4
       with:
         path: .buildozer
         key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
@@ -33,7 +33,7 @@ jobs:
         buildozer_version: master
 
     - name: Tải file APK lên Artifacts để download
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4 # Sửa triệt để lỗi ép buộc v4 của GitHub
       with:
         name: Buildozer-APK
         path: bin/*.apk

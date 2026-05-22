@@ -1,49 +1,30 @@
 name: Build Flet APK
 on: [push]
-
-# VÁ LỖI TẠI ĐÂY: Cấp quyền tối cao cho máy chủ GitHub được ghi file APK vào kho lưu trữ
-permissions:
-  contents: write
-  actions: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      # 1. Cài đặt Java cho môi trường Android
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      # 2. Cài đặt Flutter SDK dựng giao diện
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-
-      # 3. Cài đặt Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      # 4. Cài đặt Flet CLI
-      - name: Install Flet CLI
-        run: pip install flet
-
-      # 5. Tiến hành ép xung đóng gói tạo file APK
-      - name: Build APK
-        run: |
-          flet build apk
-
-      # 6. Đẩy file APK lên hệ thống lưu trữ để tải về
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: app-release
-          path: build/apk/app-release.apk
-          
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install Flet CLI
+      run: pip install flet
+    - name: Build APK
+      run: flet build apk
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-release
+        path: build/apk/app-release.apk
+        

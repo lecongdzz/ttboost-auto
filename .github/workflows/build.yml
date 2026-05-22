@@ -5,14 +5,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      # 1. Cài đặt môi trường Java (Bắt buộc để đóng gói ứng dụng Android)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 2. Cài đặt Flutter SDK (Nền tảng lõi mà Flet sử dụng để dựng giao diện APK)
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      # 3. Cài đặt ngôn ngữ Python cho máy chủ
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+
+      # 4. Cài đặt thư viện Flet phiên bản CLI chuyên dụng
       - name: Install Flet CLI
         run: pip install flet
+
+      # 5. Tiến hành ép xung đóng gói tạo file APK chuẩn phát hành
       - name: Build APK
         run: flet build apk
+
+      # 6. Đẩy file APK lên hệ thống lưu trữ để bạn tải về máy
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:

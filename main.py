@@ -399,3 +399,4 @@ if __name__ == '__main__':
     # Chạy hàm kiểm tra chữ ký trước khi khởi dựng UI
     check_apk_signature()
     TTBoostApp().run()
+        

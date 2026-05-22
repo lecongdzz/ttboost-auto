@@ -3,37 +3,36 @@ name: Build APK với Buildozer
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # Giúp bấm nút tự kích hoạt build bằng tay bất cứ lúc nào
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout mã nguồn
-      uses: actions/checkout@v4 # Đã nâng cấp lên v4
+      uses: actions/checkout@v4
 
-    - name: Cài đặt các công cụ hệ thống và Rust
+    - name: Cài đặt toàn bộ dependencies hệ thống (Java, Rust, Build tools)
       run: |
         sudo apt-get update
-        sudo apt-get install -y autoconf automake libtool pkg-config patch unzip textinfo
+        sudo apt-get install -y build-essential ccache git libffi-dev libssl-dev libtool autoconf automake pkg-config patch unzip texinfo cmake openjdk-17-jdk zip unzip python3-pip python3-setuptools python3-dev
+        
+        # Cài đặt Rust bắt buộc cho thư viện cryptography
         curl https://sh.rustup.rs -sSf | sh -s -- -y
         echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
-    - name: Thiết lập Cache cho Buildozer
-      uses: actions/cache@v4 # Đã nâng cấp lên v4
-      with:
-        path: .buildozer
-        key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+    - name: Cài đặt Buildozer và Cython
+      run: |
+        pip3 install --user --upgrade buildozer cython virtualenv
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Chạy Buildozer đóng gói APK
-      uses: ArtemSBulgakov/buildozer-action@v1
-      with:
-        workdir: .
-        buildozer_version: master
+      run: |
+        yes y | buildozer android debug
 
     - name: Tải file APK lên Artifacts để download
-      uses: actions/upload-artifact@v4 # Sửa triệt để lỗi ép buộc v4 của GitHub
+      uses: actions/upload-artifact@v4
       with:
         name: Buildozer-APK
         path: bin/*.apk

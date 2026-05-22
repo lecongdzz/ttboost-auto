@@ -16,7 +16,7 @@ jobs:
     - name: Cài đặt toàn bộ dependencies hệ thống (Java, Rust, Build tools)
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential ccache git libffi-dev libssl-dev libtool autoconf automake pkg-config patch unzip textinfo cmake openjdk-17-jdk zip unzip python3-pip python3-setuptools python3-dev
+        sudo apt-get install -y build-essential ccache git libffi-dev libssl-dev libtool autoconf automake pkg-config patch unzip texinfo cmake openjdk-17-jdk zip unzip python3-pip python3-setuptools python3-dev
         
         # Cài đặt Rust bắt buộc cho thư viện cryptography
         curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -27,7 +27,7 @@ jobs:
         pip3 install --user --upgrade buildozer cython virtualenv
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-    - name: Khởi tạo Bộ nhớ đệm (Cache) - Giảm thời gian chờ từ 20 phút xuống còn 3 phút
+    - name: Khởi tạo Bộ nhớ đệm (Cache) - Tiết kiệm thời gian cho lần sau
       uses: actions/cache@v4
       with:
         path: |
@@ -38,11 +38,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
-    - name: Tự động ký chấp nhận Android SDK Licenses (Sửa triệt để lỗi kẹt Google)
+    - name: Tự động ký chấp nhận Android SDK Licenses
       run: |
         export PATH=$PATH:$HOME/.local/bin:$HOME/.cargo/bin
         mkdir -p ~/.android && touch ~/.android/repositories.cfg
-        # Lệnh ép robot tự động đồng ý tất cả điều khoản Android
         yes | buildozer android licenses || true
 
     - name: Chạy Buildozer đóng gói APK
